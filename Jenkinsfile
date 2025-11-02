@@ -8,7 +8,7 @@ pipeline {
     }
     
 parameters {
-        string(name: 'RUN_STAGE', defaultValue: 'all', description: 'Enter the stage to run (e.g.apply or destroy)')
+        string(name: 'RUN_STAGE', defaultValue: 'None', description: 'Enter the stage to run (e.g.apply or destroy)')
     }
     stages {
         stage('Checkout Code') {
@@ -18,12 +18,18 @@ parameters {
         }
 
         stage('Terraform Init') {
+            when {
+                expression { params.RUN_STAGE == 'apply' || params.RUN_STAGE == 'destroy' }
+            }
             steps {
                 bat 'terraform init'
             }
         }
 
         stage('Terraform Plan') {
+             when {
+                expression { params.RUN_STAGE == 'apply' || params.RUN_STAGE == 'destroy' }
+            }
             steps {
                 bat 'terraform plan -out=tfplan'
             }
@@ -32,7 +38,7 @@ parameters {
         
         stage('Terraform Apply') {
             when {
-                expression { params.RUN_STAGE == 'apply' || params.RUN_STAGE == 'all' }
+                expression { params.RUN_STAGE == 'apply'}
             }
             steps {
                 bat 'terraform apply -auto-approve tfplan'
@@ -41,7 +47,7 @@ parameters {
 
         stage('Terraform Destroy') {
             when {
-                expression { params.RUN_STAGE == 'destroy' || params.RUN_STAGE == 'all' }
+                expression { params.RUN_STAGE == 'destroy'}
             }
             steps {
                 bat 'terraform destroy -auto-approve'
