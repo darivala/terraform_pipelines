@@ -20,7 +20,6 @@ module "ec2_instance" {
   instance_type = "t3.micro"
   key_name      = "Jenkins_Node"
   monitoring    = true
-  subnet_id     = "subnet-0b5e66c13b3b46f86"
 
   tags = {
     Terraform   = "true"
