@@ -18,7 +18,7 @@ module "ec2_instance" {
   name = "mohan-single-instance"
   ami = "ami-01760eea5c574eb86"
   instance_type = "t3.micro"
-  subnet_id     = "subnet-0b5e66c13b3b46f86""
+  subnet_id     = "subnet-0b5e66c13b3b46f86"
   monitoring    = true
 
   tags = {
