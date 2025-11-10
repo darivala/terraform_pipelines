@@ -15,12 +15,12 @@ provider "aws" {
 
 module "ec2_instance" {
   source  = "terraform-aws-modules/ec2-instance/aws"
-  name = "mohan-single-instance"
-  ami = "ami-01760eea5c574eb86"
-  instance_type = "t3.micro"
-  key_name      = "Jenkins_Node"
+  name = "inst-crtd-terraform"
+  ami = "ami-0157af9aea2eef346"
+  instance_type = "t2.micro"
+  key_name      = "newkeypair"
   monitoring    = true
-  subnet_id     = "subnet-0b5e66c13b3b46f86"
+  subnet_id     = "subnet-0a71a8a94e71396af"
 
   tags = {
     Terraform   = "true"
