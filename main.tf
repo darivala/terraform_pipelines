@@ -7,6 +7,11 @@ terraform {
   }
 
   required_version = ">= 1.5.7"
+  backend "s3" {
+    bucket = "bucketdarivala"
+    key    = "terraform/state/terraform.tfstate"
+    region = "${var.aws_region}"
+  }
 }
 
 provider "aws" {
