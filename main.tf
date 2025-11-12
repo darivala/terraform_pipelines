@@ -21,12 +21,12 @@ provider "aws" {
 
 module "ec2_instance" {
   source  = "terraform-aws-modules/ec2-instance/aws"
-  name = "inst-crtd-terraform"
+  name = "inst-crtd-trfm"
   ami = "ami-0157af9aea2eef346"
   instance_type = "t2.micro"
   key_name      = "newkeypair"
   monitoring    = true
-  subnet_id     = "subnet-0a71a8a94e71396af"
+  subnet_id     = "subnet-05e495c84f06f9ab3"
 
   tags = {
     Terraform   = "true"
