@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_DEFAULT_REGION    = 'us-east-1'
+    }
+    
+parameters {
+        choice(name: 'RUN_STAGE', choices: ['apply', 'destroy'], description: 'Select the apply or destroy actions')
+    }
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()  // This removes all files in the workspace
+            }
+        }
+        
+        stage('Checkout Code') {
+            steps {
+                git branch: 'master', url: 'https://github.com/darivala/terraform_pipelines.git'
+            }
+        }
+
+
+        stage('Terraform Apply/Destroy') {
+            steps {
+                script {
+                    withCredentials([aws(credentialsId: 'aws-jen-cred', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                     bat 'echo Access key: %AWS_ACCESS_KEY_ID%'  // should NOT print blank
+                     bat 'echo Access key: %AWS_SECRET_ACCESS_KEY%'  // should NOT print blank
+                     //bat 'terraform init  -input=false -migrate-state -force-copy'  //You only need -migrate-state -force-copy options once - the first time you switch from local → S3 backend, after the backend migration succeeds you can remove them
+                     bat 'terraform init  -input=false'
+                        if (params.RUN_STAGE == 'apply') {
+                            bat 'terraform plan -out=tfplan'
+                            bat 'terraform apply -auto-approve tfplan'
+                        } else if (params.RUN_STAGE == 'destroy') {
+                            bat 'terraform destroy -auto-approve'
+                        } else {
+                            error("❌ Invalid RUN_STAGE parameter. Must be apply or destroy.")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
